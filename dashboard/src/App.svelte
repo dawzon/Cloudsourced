@@ -1,13 +1,39 @@
 <script>
 	export let name;
-	import Login from './Login.svelte';
-	import Queue from './Queue.svelte';
+	import Login from './Login.svelte'
+	import Queue from './Queue.svelte'
+	import Nodes from './Nodes.svelte'
+	import YourJobs from './YourJobs.svelte'
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Work+Sans&display=swap');
 :global(body) {
-	background-color: black
+	background-color: black;
+	color: white;
+	font-family: 'Work Sans', sans-serif;
+}
+:global(.card) {
+    display: inline-block;
+    border-style: solid;
+    border-color: white;
+    border-radius: 4pt;
+    padding: 10pt;
+    margin: 8pt;
+}
+:global(.row) {
+	display: flex;
+	flex-direction: row;
+}
+.column {
+	display: flex;
+	flex-direction: column;
+	margin: 10pt;
 }
 </style>
 
-<Queue/>
+<div class="row">
+	<div class="column" style="flex-basis: 25%"><YourJobs/></div>
+	<div class="column" style="flex-basis: 100%"><Queue/></div>
+	<div class="column" style="flex-basis: 25%"><Nodes/></div>
+</div>
