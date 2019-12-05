@@ -8,8 +8,9 @@ type Job struct {
 	description string
 	//Env specs
 	os OSType
+	//TODO
 	//platform Platformtype
-	perfTier int
-	minRAM   int
-	hasGPU   bool
+	//perfTier int
+	//minRAM   int
+	//hasGPU   bool
 }
