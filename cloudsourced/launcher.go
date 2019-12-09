@@ -29,3 +29,16 @@ package main
 // 		}
 // 	}
 // }
+
+var something []int
+
+func main() {
+
+	// fmt.Println("This is some test code in launcher.go")
+
+	// testJobs()
+	// j, _ := json.Marshal(jobsRunning)
+	// fmt.Println(string(j))
+
+	Init()
+}

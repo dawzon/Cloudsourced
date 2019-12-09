@@ -4,6 +4,12 @@
 	import Queue from './Queue.svelte'
 	import Nodes from './Nodes.svelte'
 	import YourJobs from './YourJobs.svelte'
+	import Editor from './Editor.svelte'
+
+	const LOGIN = 0
+	const MAIN = 1
+	const JOBEDIT = 2
+	var page = JOBEDIT
 </script>
 
 <style>
@@ -32,8 +38,19 @@
 }
 </style>
 
+<!-- This is bascially just a janky version of routing -->
+{#if page == LOGIN}
+This is the login page
+{/if}
+
+{#if page == MAIN}
 <div class="row">
 	<div class="column" style="flex-basis: 25%"><YourJobs/></div>
 	<div class="column" style="flex-basis: 100%"><Queue/></div>
 	<div class="column" style="flex-basis: 25%"><Nodes/></div>
 </div>
+{/if}
+
+{#if page == JOBEDIT}
+<Editor/>
+{/if}
