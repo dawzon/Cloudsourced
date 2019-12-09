@@ -92,7 +92,6 @@ func getJobsByAttribute(b map[string]interface{}) []Job {
 	var jobs []Job
 
 	for cursor.Next(context.TODO()) {
-		fmt.Println("a thing")
 		var j Job
 		err := cursor.Decode(&j)
 		if err != nil {
@@ -104,6 +103,8 @@ func getJobsByAttribute(b map[string]interface{}) []Job {
 		log.Fatal(err)
 	}
 	cursor.Close(context.TODO())
+
+	fmt.Println(jobs)
 
 	return jobs
 }

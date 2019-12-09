@@ -45,6 +45,13 @@ func handleFailedJobs(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(data)
 }
 
+func handleFinishedJobs(rw http.ResponseWriter, r *http.Request) {
+
+	data, err := json.Marshal(getJobsByStatus(finished))
+	checkJSONErr(err)
+	rw.Write(data)
+}
+
 func handleJobsByOwner(rw http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -75,6 +82,13 @@ func handleSubmitJob(rw http.ResponseWriter, r *http.Request) {
 
 func handleCancelJob(rw http.ResponseWriter, r *http.Request) {
 	//TODO
+}
+
+func handleActiveNodes(rw http.ResponseWriter, r *http.Request) {
+
+	data, err := json.Marshal(nodes)
+	checkJSONErr(err)
+	rw.Write(data)
 }
 
 //Worker-specific APIs

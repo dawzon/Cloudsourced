@@ -1,6 +1,10 @@
 <script>
     import JobCard from './JobCard.svelte'
     import * as api from './api.js'
+
+    function openEditor() {
+        //Do something
+    }
 </script>
 
 <style>
@@ -8,10 +12,10 @@
 
 <h1>Your jobs</h1>
 <div class="card">
-{#await api.getJobsByOwner("noobmaster69")}
+{#await api.getJobsByOwner("mongolian barbecue")}
 <p>...</p>
 {:then yourJobs}
-    {#if yourJobs.length == 0}
+    {#if yourJobs !== null && yourJobs.length == 0}
         You aren't running any jobs.
     {:else}
         {#each yourJobs as job}
@@ -28,5 +32,5 @@
     <p>Something bad happened: {error.message}</p>
 {/await}
     
-    <button>New Job</button>
+    <button on:click={openEditor}>New Job</button>
 </div>

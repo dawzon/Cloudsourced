@@ -7,23 +7,23 @@ import (
 //Job information related to a compute job
 type Job struct {
 
-	//Metadata
-	ID          int       `json:"id"`
-	Status      status    `json:"status"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Owner       string    `json:"owner"`
-	SubmitDate  time.Time `json:"submitdate"`
-	RunDate     time.Time `json:"rundate"`
-	FinishDate  time.Time `json:"finishdate"`
+	//Server only
+	ID         int       `json:"id"`
+	Owner      string    `json:"owner"`
+	Status     status    `json:"status"`
+	SubmitDate time.Time `json:"submitdate"`
+	RunDate    time.Time `json:"rundate"`
+	FinishDate time.Time `json:"finishdate"`
+
+	//Labels
+	Name        string `json:"name"`
+	Description string `json:"description"`
 
 	//Env specs
-	//os osType
-	//TODO
-	//platform Platformtype
-	//perfTier int
-	//minRAM   int
-	//hasGPU   bool
+	Platform platformType `json:"platform"`
+	MinRAM   int          `json:"minram"`
+	Files    []string     `json:"files"`
+	script   string       `json:"files"`
 }
 
 type status int
@@ -35,10 +35,10 @@ const (
 	finished
 )
 
-type osType int
+type platformType int
 
 const (
-	windows osType = iota
-	linux   osType = iota
-	other   osType = iota
+	windows platformType = iota
+	linux
+	other
 )

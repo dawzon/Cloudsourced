@@ -5,11 +5,12 @@
 	import Nodes from './Nodes.svelte'
 	import YourJobs from './YourJobs.svelte'
 	import Editor from './Editor.svelte'
+	import * as api from './api.js'
 
 	const LOGIN = 0
 	const MAIN = 1
 	const JOBEDIT = 2
-	var page = JOBEDIT
+	var page = MAIN
 </script>
 
 <style>

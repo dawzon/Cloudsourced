@@ -6,12 +6,20 @@ export async function getRunningJobs() {
     return response.json()
 }
 
-export function getQueuedJobs() {
-    //TODO
+export async function getQueuedJobs() {
+    
+    const response = await fetch(base_url + "/queued_jobs")
+    return response.json()
 }
 
-export function getFailedJobs() {
-    //TODO
+export async function getFailedJobs() {
+    const response = await fetch(base_url + "/failed_jobs")
+    return response.json()
+}
+
+export async function getFinishedJobs() {
+    const response = await fetch(base_url + "/finished_jobs")
+    return response.json()
 }
 
 export async function getJobsByOwner(owner) {
@@ -20,18 +28,34 @@ export async function getJobsByOwner(owner) {
     return response.json()
 }
 
-export function uploadFile() {
+export async function uploadFile() {
     //TODO
 }
 
-export function deleteFile() {
+export async function deleteFile() {
     //TODO
 }
 
-export function submitJob() {
+export async function submitJob(name, description, platform, minram, files, script) {
+    
+    var request = {
+        "name": name,
+        "description": description,
+        "platform": platform,
+        "minram": minram,
+        "files": files,
+        "script": script,
+    }
+
+    return fetch(base_url + 'submit_job', {method: "POST", body: JSON.stringify(request)})
+}
+
+export async function cancelJob() {
     //TODO
 }
 
-export function cancelJob() {
-    //TODO
+export async function getActiveNodes(){
+
+    const response = await fetch(base_url + "/active_nodes")
+    return response.json()
 }
