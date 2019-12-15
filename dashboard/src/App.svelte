@@ -3,14 +3,19 @@
 	import Login from './Login.svelte'
 	import Queue from './Queue.svelte'
 	import Nodes from './Nodes.svelte'
-	import YourJobs from './YourJobs.svelte'
 	import Editor from './Editor.svelte'
+	import WorkerControl from './WorkerControl.svelte'
 	import * as api from './api.js'
 
 	const LOGIN = 0
 	const MAIN = 1
 	const JOBEDIT = 2
-	var page = MAIN
+	var page = LOGIN
+
+	function gotoLogin() { page = LOGIN }
+	function gotoMain() { page = MAIN }
+	function gotoJobedit() { page = JOBEDIT }
+
 </script>
 
 <style>
@@ -41,17 +46,19 @@
 
 <!-- This is bascially just a janky version of routing -->
 {#if page == LOGIN}
-This is the login page
+<Login gotoMain={gotoMain}/>
 {/if}
 
 {#if page == MAIN}
+<!-- <h1 style="padding-left: 15pt">Your Name - InstanceIP</h1> -->
 <div class="row">
-	<div class="column" style="flex-basis: 25%"><YourJobs/></div>
-	<div class="column" style="flex-basis: 100%"><Queue/></div>
+	<!-- <div class="column" style="flex-basis: 25%"><YourJobs gotoJobedit={gotoJobedit}/></div> -->
+	<div class="column" style="flex-basis: 100%"><Queue gotoJobedit={gotoJobedit}/></div>
 	<div class="column" style="flex-basis: 25%"><Nodes/></div>
 </div>
+<WorkerControl/>
 {/if}
 
 {#if page == JOBEDIT}
-<Editor/>
+<Editor gotoMain={gotoMain} alias="REPLACE_THIS"/>
 {/if}

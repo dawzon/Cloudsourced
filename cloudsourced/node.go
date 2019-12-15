@@ -1,5 +1,5 @@
 package main
 
-type node struct {
-	name string
+type Node struct {
+	alias string
 }

@@ -38,5 +38,5 @@
     <span class="status_running">{statusString}</span> <br>
     <span class="jobtype">{info}</span> <br>
     Started {submitdate}, <br>
-    __:__:__ elapsed.<br>
+    <!-- __:__:__ elapsed.<br> -->
 </div>

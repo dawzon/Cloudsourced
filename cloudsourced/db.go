@@ -59,11 +59,10 @@ func dbDisconnect() {
 
 func storeJob(job Job) {
 
-	result, err := collectionJobs.InsertOne(context.TODO(), job)
+	_, err := collectionJobs.InsertOne(context.TODO(), job)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(result)
 }
 
 func getJobByID(id int) Job {
@@ -80,6 +79,18 @@ func getJobByID(id int) Job {
 	}
 
 	return job
+}
+
+func getJobByAttribute(b map[string]interface{}) Job {
+
+	var j Job
+
+	err := collectionJobs.FindOne(context.TODO(), b).Decode(&j)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return j
 }
 
 func getJobsByAttribute(b map[string]interface{}) []Job {
@@ -104,8 +115,6 @@ func getJobsByAttribute(b map[string]interface{}) []Job {
 	}
 	cursor.Close(context.TODO())
 
-	fmt.Println(jobs)
-
 	return jobs
 }
 
@@ -117,4 +126,25 @@ func getJobsByStatus(s status) []Job {
 func getJobsByOwner(owner string) []Job {
 
 	return getJobsByAttribute(bson.M{"owner": owner})
+}
+
+func setJobStatus(id int, s status) {
+
+	collectionJobs.FindOneAndUpdate(context.TODO(), bson.M{"id": id}, bson.M{"$set": bson.M{"status": s}}, options.FindOneAndUpdate())
+}
+
+func getJobAndRun() Job {
+
+	var j Job
+
+	err := collectionJobs.FindOneAndUpdate(
+		context.TODO(),
+		bson.M{"status": waiting},
+		bson.M{"$set": bson.M{"status": running}},
+		options.FindOneAndUpdate()).Decode(&j)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return j
 }

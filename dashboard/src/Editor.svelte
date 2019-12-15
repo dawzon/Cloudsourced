@@ -1,24 +1,33 @@
 <script>
+    import * as api from './api.js'
+
+    export let gotoMain
+
     var jobName = "Untitled"
     var description
     var platform
-    var memory = 2048 //TODO I might be confusing megabytes and mebibytes
+    //var memory = 2048 //TODO I might be confusing megabytes and mebibytes
+    var script
 
-    //TODO get the actual files
-    var files = ["swag.exe", "naenae.dll", "magic_numbers.txt"]
-    var selectedFiles = []
+    //var files = ["swag.exe", "naenae.dll", "magic_numbers.txt"]
+    //var selectedFiles = []
 
-    function toggleFile(file) {
-        if(selectedFiles.includes(file))
-            selectedFiles.splice(selectedFiles.indexOf(file), 1)
-        else
-            selectedFiles.push(file)
-    }
+    // function toggleFile(file) {
+    //     if(selectedFiles.includes(file))
+    //         selectedFiles.splice(selectedFiles.indexOf(file), 1)
+    //     else
+    //         selectedFiles.push(file)
+    // }
 
     function submit() {
-        //TODO submit the job
-        console.log(memory)
-        page = 0
+        //TODO set owner
+        api.submitJob(jobName, description, platform, script, "website guy")
+        //TODO tell the user about the result
+        gotoMain.call()
+    }
+
+    function cancel() {
+        gotoMain.call()
     }
 </script>
 
@@ -30,8 +39,13 @@
 .code-flavor {
     color: aquamarine
 }
+.container {
+    display: flex;
+    justify-content: center;
+}
 </style>
 
+<div class="container">
 <div class="card">
     <h2>Job Editor</h2>
 
@@ -44,7 +58,7 @@
             <td>Description</td>
             <td><input bind:value={description}/></td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td>Memory</td>
             <td class="memory">
                 <input type="radio" bind:group={memory} value={512}> 512M
@@ -55,18 +69,18 @@
                 <input type="radio" bind:group={memory} value={16384}> 16G
                 <input type="radio" bind:group={memory} value={32768}> 32G
             </td>
-        </tr>
+        </tr> -->
         <tr>
             <td>Platform</td>
             <td>
                 <select bind:value={platform}>
-                    <option>Windows</option>
-                    <option>Linux</option>
+                    <!-- <option>Windows</option>
+                    <option>Linux</option> -->
                     <option>Web</option>
                 </select>
             </td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td>Files</td>
             <td>
                 {#if platform != "Web"}
@@ -77,7 +91,7 @@
                     N/A
                 {/if}
             </td>
-        </tr>
+        </tr> -->
         <tr>
             <td>Script</td>
             <td>
@@ -89,13 +103,14 @@
                     {:else if platform == "Web"}
                         <p class="code-flavor">Javascript</p>
                     {/if}
-                    <textarea></textarea>
+                    <textarea bind:value={script}></textarea>
                 </div>
             </td>
         </tr>
         <tr>
             <td></td>
-            <td><button on:click={submit}>Submit</button></td>
+            <td> <button on:click={submit}>Submit</button> <button on:click={cancel}>Cancel</button> </td>
         </tr>
     </table>
+</div>
 </div>

@@ -8,12 +8,14 @@ import (
 type Job struct {
 
 	//Server only
-	ID         int       `json:"id"`
-	Owner      string    `json:"owner"`
-	Status     status    `json:"status"`
-	SubmitDate time.Time `json:"submitdate"`
-	RunDate    time.Time `json:"rundate"`
-	FinishDate time.Time `json:"finishdate"`
+	ID         int           `json:"id"`
+	Owner      string        `json:"owner"`
+	Status     status        `json:"status"`
+	Timeout    time.Duration `json:"timeout"`
+	SubmitDate time.Time     `json:"submitdate"`
+	RunDate    time.Time     `json:"rundate"`
+	FinishDate time.Time     `json:"finishdate"`
+	Output     string        `json:"output"`
 
 	//Labels
 	Name        string `json:"name"`
@@ -21,9 +23,9 @@ type Job struct {
 
 	//Env specs
 	Platform platformType `json:"platform"`
-	MinRAM   int          `json:"minram"`
-	Files    []string     `json:"files"`
-	script   string       `json:"files"`
+	//MinRAM   int          `json:"minram"`
+	//Files    []string     `json:"files"`
+	Script string `json:"script"`
 }
 
 type status int
@@ -40,5 +42,10 @@ type platformType int
 const (
 	windows platformType = iota
 	linux
-	other
+	web
 )
+
+func platformStringToInt(p string) platformType {
+	//TODO web is the only implemented platform
+	return web
+}
