@@ -15,6 +15,8 @@ func Init() {
 	loadConfig()
 	dbConnect()
 
+	resetRunningJobs()
+
 	http.HandleFunc(apiEndpoint+"/queued_jobs", handleQueuedJobs)
 	http.HandleFunc(apiEndpoint+"/running_jobs", handleRunningJobs)
 	http.HandleFunc(apiEndpoint+"/failed_jobs", handleFailedJobs)

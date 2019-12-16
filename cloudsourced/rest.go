@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,7 +34,7 @@ func handleQueuedJobs(rw http.ResponseWriter, r *http.Request) {
 
 func handleRunningJobs(rw http.ResponseWriter, r *http.Request) {
 
-	data, err := json.Marshal(jobsRunning)
+	data, err := json.Marshal(getJobsByStatus(running))
 	checkJSONErr(err)
 	rw.Write(data)
 }
@@ -86,19 +85,19 @@ func handleSubmitJob(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	var object map[string]interface{}
-	fmt.Println("Getting a job")
-	fmt.Println(object)
 	json.Unmarshal(body, &object)
 	var name = object["name"].(string)
 	var description = object["description"].(string)
 	var platform = object["description"].(string)
 	var script = object["script"].(string)
 	var owner = object["owner"].(string)
+	var timeout = int(object["timeout"].(float64))
 
 	newJob := Job{
 		ID:          getNextID(),
 		Owner:       owner,
 		Status:      waiting,
+		Timeout:     time.Duration(timeout) * time.Second,
 		SubmitDate:  time.Now(),
 		Name:        name,
 		Description: description,
@@ -154,7 +153,7 @@ func handleGetWork(rw http.ResponseWriter, r *http.Request) {
 
 	addNode(Node{alias}) //TODO this might not be the right way to do this
 
-	job := getJobAndRun() //This marks the job as running in the database
+	job := getJobAndRun(alias) //This marks the job as running in the database
 	jobJSON, _ := json.Marshal(job)
 	rw.Write([]byte(jobJSON))
 
@@ -176,14 +175,18 @@ func handleSubmitWork(rw http.ResponseWriter, r *http.Request) {
 	var alias = object["alias"].(string)
 	var output = object["output"].(string)
 
-	//TODO verify that this job is still "running"
+	addNode(Node{alias}) //TODO
 
-	addNode(Node{alias})
+	job := getJobByID(id)
+	if job.Status != running {
+		//TODO return an error
+		return
+	}
 
 	jobTimeouts[id].Stop()
 	delete(jobTimeouts, id)
 
-	//TODO add result
+	finalizeJob(id, output)
 }
 
 // func handleGetFile(rw http.ResponseWriter, r *http.Request) {

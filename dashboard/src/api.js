@@ -2,8 +2,17 @@ const base_url = 'http://' + window.location.hostname + ':8080/api'
 
 export var alias
 
+export function getAlias() {
+    return alias
+}
+
 export function setAlias(a) {
     alias = a
+}
+
+export function isAliasValid(a) {
+    if(typeof a == "undefined" || a == "") return false
+    return true
 }
 
 export async function getRunningJobs() {
@@ -42,7 +51,7 @@ export async function getJobsByOwner(owner) {
 //     //TODO
 // }
 
-export async function submitJob(name, description, platform, script, owner) {
+export async function submitJob(name, description, platform, script, owner, timeout) {
     
     var request = {
         "name": name,
@@ -50,10 +59,10 @@ export async function submitJob(name, description, platform, script, owner) {
         "platform": platform,
         "script": script,
         "owner": owner,
+        "timeout": timeout,
     }
 
     const response = await fetch(base_url + '/submit_job', {method: "POST", body: JSON.stringify(request)})
-    return await response.json()
 }
 
 // export async function cancelJob() {

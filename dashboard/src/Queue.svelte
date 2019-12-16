@@ -17,7 +17,7 @@
         finishedJobs = await api.getFinishedJobs()
         yourJobs = await api.getJobsByOwner(api.alias)
     }
-    setInterval(refreshJobs, 10000)
+    setInterval(refreshJobs, 5000)
 
     refreshJobs()
 </script>

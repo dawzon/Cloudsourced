@@ -12,6 +12,7 @@ type Job struct {
 	Owner      string        `json:"owner"`
 	Status     status        `json:"status"`
 	Timeout    time.Duration `json:"timeout"`
+	Worker     string        `json:"worker"`
 	SubmitDate time.Time     `json:"submitdate"`
 	RunDate    time.Time     `json:"rundate"`
 	FinishDate time.Time     `json:"finishdate"`

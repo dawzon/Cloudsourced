@@ -3,11 +3,14 @@
 
     export let gotoMain
 
+    const timeoutTip = "This is the amount of time to wait before the job will be considered abandoned.  This is to prevent your job from being lost if the worker goes offline during job execution."
+
     var jobName = "Untitled"
     var description
     var platform
     //var memory = 2048 //TODO I might be confusing megabytes and mebibytes
     var script
+    var timeout = 10
 
     //var files = ["swag.exe", "naenae.dll", "magic_numbers.txt"]
     //var selectedFiles = []
@@ -21,7 +24,7 @@
 
     function submit() {
         //TODO set owner
-        api.submitJob(jobName, description, platform, script, "website guy")
+        api.submitJob(jobName, description, platform, script, api.getAlias(), timeout*60)
         //TODO tell the user about the result
         gotoMain.call()
     }
@@ -106,6 +109,10 @@
                     <textarea bind:value={script}></textarea>
                 </div>
             </td>
+        </tr>
+        <tr>
+            <td>Timeout <a on:click="{() => alert(timeoutTip)}">[ ? ]</a></td>
+            <td><input type="number" bind:value={timeout}> Minutes</td>
         </tr>
         <tr>
             <td></td>

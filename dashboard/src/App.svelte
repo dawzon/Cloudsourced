@@ -60,5 +60,5 @@
 {/if}
 
 {#if page == JOBEDIT}
-<Editor gotoMain={gotoMain} alias="REPLACE_THIS"/>
+<Editor gotoMain={gotoMain}/>
 {/if}

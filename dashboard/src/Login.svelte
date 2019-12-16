@@ -6,6 +6,7 @@
     var alias
 
     function login() {
+        if(!api.isAliasValid(alias)) return
         api.setAlias(alias)
         gotoMain.call()
     }
@@ -33,7 +34,7 @@ div {
     <p>Password</p>
     <input> -->
     <p>Choose an alias:</p>
-    <input bind:value={alias}>
+    <input bind:value={alias} on:keypress="{event => {if(event.key == "Enter") login()}}">
     <br>
     <!-- <p style="color:red">This login is for demonstration purposes only.  <strong>Whatever you type here will be sent in plaintext via HTTP.</strong></p> -->
     <button on:click={login}>Submit</button>
