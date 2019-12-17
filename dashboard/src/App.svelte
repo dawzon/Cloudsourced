@@ -54,7 +54,7 @@
 <div class="row">
 	<!-- <div class="column" style="flex-basis: 25%"><YourJobs gotoJobedit={gotoJobedit}/></div> -->
 	<div class="column" style="flex-basis: 100%"><Queue gotoJobedit={gotoJobedit}/></div>
-	<div class="column" style="flex-basis: 25%"><Nodes/></div>
+	<!-- <div class="column" style="flex-basis: 25%"><Nodes/></div> -->
 </div>
 <WorkerControl/>
 {/if}

@@ -35,13 +35,13 @@ func dbConnect() {
 	clientOptions := options.Client().ApplyURI("mongodb://" + config.MongoUser + ":" + config.MongoPass + "@" + config.MongoHost + ":" + strconv.Itoa(mongoPort))
 	c, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	client = c
 
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	//TODO do error checking
@@ -55,7 +55,7 @@ func dbDisconnect() {
 
 	err := client.Disconnect(context.TODO())
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	fmt.Println("DB connection closed")
 }
@@ -64,21 +64,21 @@ func storeJob(job Job) {
 
 	_, err := collectionJobs.InsertOne(context.TODO(), job)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
 func getJobByID(id int) Job {
 
-	result := collectionJobs.FindOne(context.TODO(), bson.M{"ID": id})
+	result := collectionJobs.FindOne(context.TODO(), bson.M{"id": id})
 	if result == nil {
-		log.Fatal("No job matching ID " + string(id) + " was found")
+		log.Panic("No job matching ID " + string(id) + " was found")
 	}
 
 	var job Job
 	err := result.Decode(&job)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	return job
@@ -90,7 +90,7 @@ func getJobByAttribute(b map[string]interface{}) Job {
 
 	err := collectionJobs.FindOne(context.TODO(), b).Decode(&j)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	return j
@@ -100,7 +100,7 @@ func getJobsByAttribute(b map[string]interface{}) []Job {
 
 	cursor, err := collectionJobs.Find(context.TODO(), b)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	var jobs []Job
@@ -114,7 +114,7 @@ func getJobsByAttribute(b map[string]interface{}) []Job {
 		jobs = append(jobs, j)
 	}
 	if err := cursor.Err(); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	cursor.Close(context.TODO())
 
@@ -136,7 +136,7 @@ func setJobStatus(id int, s status) {
 	collectionJobs.FindOneAndUpdate(context.TODO(), bson.M{"id": id}, bson.M{"$set": bson.M{"status": s}}, options.FindOneAndUpdate())
 }
 
-func getJobAndRun(workerName string) Job {
+func getJobAndRun(workerName string) (Job, bool) {
 
 	var j Job
 
@@ -150,26 +150,30 @@ func getJobAndRun(workerName string) Job {
 		}},
 		options.FindOneAndUpdate()).Decode(&j)
 	if err != nil {
-		log.Fatal(err)
+		//TODO this should mean that no jobs were found
+		return j, false
 	}
 
-	return j
+	return j, true
 }
 
 func finalizeJob(id int, output string) {
 
-	err := collectionJobs.FindOneAndUpdate(
+	collectionJobs.FindOneAndUpdate(
 		context.TODO(),
 		bson.M{"id": id},
 		bson.M{"$set": bson.M{
 			"output":     output,
 			"status":     finished,
-			"submitdate": time.Now(),
+			"finishdate": time.Now(),
 		}},
 		options.FindOneAndUpdate())
-	if err != nil {
-		log.Fatal(err)
-	}
+	//TODO there's an error here, for some reason
+	// if err != nil {
+	// 	fmt.Println("something weird is happening")
+	// 	fmt.Println(err.Error())
+	// 	log.Panic(err)
+	// }
 }
 
 func resetRunningJobs() {
@@ -179,17 +183,21 @@ func resetRunningJobs() {
 		bson.M{"status": running},
 		bson.M{
 			"$set":   bson.M{"status": waiting},
-			"$unset": bson.M{"rundate": ""}})
+			"$unset": bson.M{"rundate": "", "worker": ""}})
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
 func getMaxId() int {
 
-	cursor, err := collectionJobs.Find(context.TODO(), bson.M{})
+	opts := options.Find().SetSort(bson.D{{"id", -1}}).SetLimit(1)
+	cursor, err := collectionJobs.Find(context.TODO(), bson.M{}, opts)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
-	//TODO
+	cursor.Next(context.TODO())
+	var j Job
+	cursor.Decode(&j)
+	return j.ID
 }

@@ -34,8 +34,8 @@ type status int
 const (
 	waiting status = iota
 	running
-	failed
 	finished
+	//failed
 )
 
 type platformType int

@@ -4,15 +4,17 @@
     export let gotoMain
 
     const timeoutTip = "This is the amount of time to wait before the job will be considered abandoned.  This is to prevent your job from being lost if the worker goes offline during job execution."
+    const scriptingTip = "The JavaScript code that you enter will be executed with eval() in the worker's browser.  Anything printed with console.log() will be returned as the output."
+    const defaultScript = "//Example script\n//This job probably won't show up in the 'Running' queue since its run time is\n//much shorter than the 5-second refresh period\nvar x = 2\nvar y = 3\nconsole.log('Hello world!')\nconsole.log('2 + 3 = ' + (x+y))"
 
     var jobName = "Untitled"
-    var description
+    var description = "A job."
     var platform
     //var memory = 2048 //TODO I might be confusing megabytes and mebibytes
-    var script
+    var script = defaultScript
     var timeout = 10
 
-    //var files = ["swag.exe", "naenae.dll", "magic_numbers.txt"]
+    //var files = []
     //var selectedFiles = []
 
     // function toggleFile(file) {
@@ -23,9 +25,19 @@
     // }
 
     function submit() {
-        //TODO set owner
+        if(!jobName) {
+            alert("Enter a job name!");
+            return;
+        }
+        if(!description) {
+            alert("Enter a description!");
+            return;
+        }
+        if(!script) {
+            alert("Enter a job script!");
+            return;
+        }
         api.submitJob(jobName, description, platform, script, api.getAlias(), timeout*60)
-        //TODO tell the user about the result
         gotoMain.call()
     }
 
@@ -45,6 +57,10 @@
 .container {
     display: flex;
     justify-content: center;
+}
+textarea {
+    width: 500pt;
+    height: 300pt;
 }
 </style>
 
@@ -96,7 +112,7 @@
             </td>
         </tr> -->
         <tr>
-            <td>Script</td>
+            <td>Script <a on:click="{() => alert(scriptingTip)}">[ ? ]</a></td>
             <td>
                 <div style="display:flex; flex-direction:column;">
                     {#if platform == "Windows"}

@@ -6,16 +6,16 @@
 
     var queuedJobs = null
     var runningJobs = null
-    var failedJobs = null
+    //var failedJobs = null
     var finishedJobs = null
-    var yourJobs = null
+    //var yourJobs = null
 
     async function refreshJobs() {
         queuedJobs = await api.getQueuedJobs()
         runningJobs = await api.getRunningJobs()
-        failedJobs = await api.getFailedJobs()
+        //failedJobs = await api.getFailedJobs()
         finishedJobs = await api.getFinishedJobs()
-        yourJobs = await api.getJobsByOwner(api.alias)
+        //yourJobs = await api.getJobsByOwner(api.getAlias())
     }
     setInterval(refreshJobs, 5000)
 
@@ -31,7 +31,7 @@
 }
 </style>
 
-<h1>Your jobs</h1>
+<!-- <h1>Your jobs</h1>
 <div class="card">
 {#if yourJobs == null || yourJobs.length == 0}
     You aren't running any jobs.
@@ -43,11 +43,11 @@
             description={job.description}
             status={job.status}
             info="Web"
-            submitdate={job.submitdate} />
+            date={job.submitdate} />
     {/each}
 {/if}
 <button on:click={gotoJobedit}>New Job</button>
-</div>
+</div> -->
 
 <h1>Queue</h1>
 
@@ -61,7 +61,7 @@
             description={job.description}
             status={job.status}
             info="Web"
-            submitdate={job.submitdate} />
+            date={job.submitdate} />
     {/each}
 {:else}
     <p>No jobs.</p>
@@ -78,14 +78,14 @@
             description={job.description}
             status={job.status}
             info="Web"
-            submitdate={job.submitdate} />
+            date={job.rundate} />
     {/each}
 {:else}
     <p>No jobs.</p>
 {/if}
 </div>
 
-<h2>Failed</h2>
+<!-- <h2>Failed</h2>
 <div class="autoflow">
 {#if failedJobs !== null}
     {#each failedJobs as job}
@@ -100,7 +100,7 @@
 {:else}
     <p>No jobs.</p>
 {/if}
-</div>
+</div> -->
 
 <h2>Finished</h2>
 <div class="autoflow">
@@ -112,9 +112,12 @@
             description={job.description}
             status={job.status}
             info="Web"
-            submitdate={job.submitdate} />
+            date={job.finishdate}
+            output={job.output} />
     {/each}
 {:else}
     <p>No jobs.</p>
 {/if}
 </div>
+
+<button style="width: 120pt; margin: 25pt;" on:click={gotoJobedit}>New Job</button>

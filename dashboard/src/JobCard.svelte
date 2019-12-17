@@ -4,20 +4,25 @@
     export let description
     export let status
     export let info
-    export let submitdate
+    export let date
+    export let output
+
+    const WAITING = 0;
+    const RUNNING = 1;
+    const FINISHED = 2;
 
     var statusString
     switch(status) {
-        case 0:
+        case WAITING:
             statusString = "⏸ Waiting"
             break;
-        case 1:
+        case RUNNING:
             statusString = "▶ Running"
             break;
-        case 2:
-            statusString = "✗ Failed"
-            break;
-        case 3:
+        // case 2:
+        //     statusString = "✗ Failed"
+        //     break;
+        case FINISHED:
             statusString = "✓ Finished"
             break;
     }
@@ -37,6 +42,16 @@
     {description} <br>
     <span class="status_running">{statusString}</span> <br>
     <span class="jobtype">{info}</span> <br>
-    Started {submitdate}, <br>
+    {#if status == WAITING}
+        Submitted
+    {:else if status == RUNNING}
+        Started
+    {:else if status == FINISHED}
+        Finished
+    {/if}
+    {date} <br>
     <!-- __:__:__ elapsed.<br> -->
+    {#if status == FINISHED}
+        <a on:click="{() => alert(output)}">[ View result ]</a>
+    {/if}
 </div>

@@ -16,17 +16,18 @@ func Init() {
 	dbConnect()
 
 	resetRunningJobs()
+	nextID = getMaxId() + 1
 
 	http.HandleFunc(apiEndpoint+"/queued_jobs", handleQueuedJobs)
 	http.HandleFunc(apiEndpoint+"/running_jobs", handleRunningJobs)
-	http.HandleFunc(apiEndpoint+"/failed_jobs", handleFailedJobs)
+	//http.HandleFunc(apiEndpoint+"/failed_jobs", handleFailedJobs)
 	http.HandleFunc(apiEndpoint+"/finished_jobs", handleFinishedJobs)
 	http.HandleFunc(apiEndpoint+"/jobs_by_owner", handleJobsByOwner)
 	//http.HandleFunc(apiEndpoint+"/upload_file", handleUploadFile)
 	//http.HandleFunc(apiEndpoint+"/delete_file", handleDeleteFile)
 	http.HandleFunc(apiEndpoint+"/submit_job", handleSubmitJob)
 	//http.HandleFunc(apiEndpoint+"/cancel_job", handleCancelJob)
-	http.HandleFunc(apiEndpoint+"/active_nodes", handleActiveNodes)
+	//http.HandleFunc(apiEndpoint+"/active_nodes", handleActiveNodes)
 
 	//http.HandleFunc(apiEndpoint+"/connect", handleConnect)
 	//http.HandleFunc(apiEndpoint+"/disconnect", handleDisconnect)
@@ -45,10 +46,11 @@ var nextID int = 0
 var idMutex sync.Mutex
 
 func getNextID() int {
+
 	idMutex.Lock()
+	defer idMutex.Unlock()
 	n := nextID
 	nextID++
-	defer idMutex.Unlock()
 	return n
 }
 

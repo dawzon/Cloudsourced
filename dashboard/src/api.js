@@ -1,4 +1,4 @@
-const base_url = 'http://' + window.location.hostname + ':8080/api'
+const base_url = 'http://' + window.location.host + '/api'
 
 export var alias
 
@@ -27,10 +27,10 @@ export async function getQueuedJobs() {
     return response.json()
 }
 
-export async function getFailedJobs() {
-    const response = await fetch(base_url + "/failed_jobs")
-    return response.json()
-}
+// export async function getFailedJobs() {
+//     const response = await fetch(base_url + "/failed_jobs")
+//     return response.json()
+// }
 
 export async function getFinishedJobs() {
     const response = await fetch(base_url + "/finished_jobs")
@@ -69,7 +69,7 @@ export async function submitJob(name, description, platform, script, owner, time
 //     //TODO
 // }
 
-export async function getActiveNodes(){
+export async function getActiveNodes() {
 
     const response = await fetch(base_url + "/active_nodes")
     return response.json()
@@ -84,19 +84,22 @@ export async function getActiveNodes(){
 //     await fetch(base_url + "/connect", {method: "POST", body: JSON.stringify(request)})
 // }
 
-export async function getWork(alias) {
+export async function getWork() {
 
     var request = {
-        "alias": alias
+        "alias": "TODO"
     }
     const response = await fetch(base_url + "/get_work", {method: "POST", body: JSON.stringify(request)})
+    if(response.status == 204) {
+        return null;
+    }
     return await response.json()
 }
 
-export async function submitWork(alias, output) {
+export async function submitWork(id, alias, output) {
 
-    //TODO
     var request = {
+        "id": id,
         "alias": alias,
         "output": output
     }

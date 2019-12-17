@@ -2,28 +2,25 @@
     import { onMount } from 'svelte'
     import * as api from './api.js'
 
-    let time = new Date()
-    $: hours = time.getHours()
-    $: minutes = time.getMinutes()
-    $: seconds = time.setSeconds()
-
-    onMount(() => {
-        const interval = setInterval(() => {
-            time = new Date()
-        }, 1000)
-        return () => {
-            clearInterval(interval)
-        }
-    })
-
     var enabled = false;
     var currentJob
     var jobOutput = []
 
-    function startWork() {
-        enabled = true;
+    //Borrowed from https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function startWork() {
         
-        currentJob = api.getWork(api.getAlias())
+        currentJob = await api.getWork();
+        if(currentJob == null) {
+            alert("No work available.")
+            return;
+        }
+
+        enabled = true;
+        await sleep(1000);
 
         //Hijack console.log() so ouput can be captured
         //Taken from https://stackoverflow.com/questions/11403107/capturing-javascript-console-log
@@ -35,9 +32,20 @@
             };
         })();
 
-        //eval()
+        //Run the job!
+        eval(currentJob.script)
 
-        //submit work
+        await sleep(1000);
+
+        var allOutput = jobOutput.join("\n")
+        api.submitWork(currentJob.id, api.getAlias(), allOutput)
+
+        enabled = false
+        alert("Job complete!")
+    }
+
+    function timeLeft() {
+        return endTime - new Date()
     }
 </script>
 
@@ -53,14 +61,14 @@
 
 <div class="card" style="width: 50%;">
     {#if enabled}
-        Time remaining: {seconds} <br>
-        Current Job: {#if currentJob} {currentJob.name} {:else} Hello world {/if}
+        <!-- Time remaining: {secondsLeft} <br> -->
+        Current Job: {#if currentJob} {currentJob.name} {:else} - {/if}
         <h4>Output</h4>
-        <div class="output-display">
+        <!-- <div class="output-display">
         {#each jobOutput as line}
             {line}<br>
         {/each}
-        </div>
+        </div> -->
     {:else}
         <button on:click={startWork}>Start working</button>
     {/if}

@@ -39,12 +39,12 @@ func handleRunningJobs(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(data)
 }
 
-func handleFailedJobs(rw http.ResponseWriter, r *http.Request) {
+// func handleFailedJobs(rw http.ResponseWriter, r *http.Request) {
 
-	data, err := json.Marshal(getJobsByStatus(failed))
-	checkJSONErr(err)
-	rw.Write(data)
-}
+// 	data, err := json.Marshal(getJobsByStatus(failed))
+// 	checkJSONErr(err)
+// 	rw.Write(data)
+// }
 
 func handleFinishedJobs(rw http.ResponseWriter, r *http.Request) {
 
@@ -119,8 +119,6 @@ func handleActiveNodes(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(data)
 }
 
-//Worker-specific APIs
-
 // func handleConnect(rw http.ResponseWriter, r *http.Request) {
 
 // 	body, err := ioutil.ReadAll(r.Body)
@@ -153,7 +151,12 @@ func handleGetWork(rw http.ResponseWriter, r *http.Request) {
 
 	addNode(Node{alias}) //TODO this might not be the right way to do this
 
-	job := getJobAndRun(alias) //This marks the job as running in the database
+	job, available := getJobAndRun(alias) //This marks the job as running in the database
+	if !available {
+		rw.WriteHeader(http.StatusNoContent)
+		return
+	}
+
 	jobJSON, _ := json.Marshal(job)
 	rw.Write([]byte(jobJSON))
 
@@ -171,7 +174,7 @@ func handleSubmitWork(rw http.ResponseWriter, r *http.Request) {
 
 	var object map[string]interface{}
 	json.Unmarshal(body, &object)
-	var id = object["id"].(int)
+	var id = int(object["id"].(float64))
 	var alias = object["alias"].(string)
 	var output = object["output"].(string)
 
